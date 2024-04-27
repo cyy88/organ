@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mty.organ.mapper.ApplyMapper" >
+
+    <resultMap id="BaseResultMap" type="com.mty.organ.entity.Apply">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="oid" jdbcType="VARCHAR" property="oid" />
+        <result column="uid" jdbcType="VARCHAR" property="uid" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        oid,
+        uid,
+        remark,
+        status,
+        create_time
+    </sql>
+
+
+    <!--根据ID查询-->
+    <select id="queryById" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from apply where id=#{id}
+    </select>
+
+
+    <select id="queryAllByLimit" resultType="com.mty.organ.entity.Apply" parameterType="map">
+        select
+        a.id,
+        a.oid,
+        a.uid,
+        a.remark,
+        a.status,
+        a.create_time createTime,
+        o.name oname,
+        o.type otype,
+        u.username uname,
+        u.realname realname
+        from apply a left join organ o on a.oid = o.id left join user u on a.uid = u.id
+        <where>
+            <if test="id != null and id != '' ">
+                and a.id = #{id}
+            </if>
+            <if test="realname != null and realname != '' ">
+                and u.realname like concat('%',#{realname},'%')
+            </if>
+            <if test="mid != null and mid != '' ">
+                and a.oid in ((select o.id from organ o where o.uid = #{mid}))
+            </if>
+            <if test="oid != null and oid != '' ">
+                and a.oid = #{oid}
+            </if>
+            <if test="uid != null and uid != '' ">
+                and a.uid = #{uid}
+            </if>
+            <if test="remark != null and remark != '' ">
+                and a.remark = #{remark}
+            </if>
+            <if test="status != null and status != '' ">
+                and a.status = #{status}
+            </if>
+            <if test="pstatus != null and pstatus != '' ">
+                and a.status in ('01','02','04')
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and a.create_time = #{createTime}
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+
+    <select id="queryCondition" resultType="com.mty.organ.entity.Apply">
+        select
+        a.id,
+        a.oid,
+        a.uid,
+        a.remark,
+        a.status,
+        a.create_time createTime,
+        o.name oname,
+        o.type otype,
+        u.username uname,
+        u.realname realname
+        from apply a left join organ o on a.oid = o.id left join user u on a.uid = u.id
+        <where>
+            <if test="id != null and id != '' ">
+                and a.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and a.oid = #{oid}
+            </if>
+            <if test="uid != null and uid != '' ">
+                and a.uid = #{uid}
+            </if>
+            <if test="remark != null and remark != '' ">
+                and a.remark = #{remark}
+            </if>
+            <if test="status != null and status != '' ">
+                and a.status = #{status}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and a.create_time = #{createTime}
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+
+    <!--添加-->
+    <insert id="insert" parameterType="com.mty.organ.entity.Apply" keyProperty="id" useGeneratedKeys="true">
+        insert into apply (
+            oid,
+            uid,
+            remark,
+            status,
+            create_time
+        )values(
+            #{oid},
+            #{uid},
+            #{remark},
+            #{status},
+            #{createTime}
+        )
+    </insert>
+
+
+    <!--修改-->
+    <update id="update" parameterType="com.mty.organ.entity.Apply">
+        update apply
+        <set>
+            <if test="oid != null and oid != '' ">
+                oid = #{oid},
+            </if>
+            <if test="uid != null and uid != '' ">
+                uid = #{uid},
+            </if>
+            <if test="remark != null and remark != '' ">
+                remark = #{remark},
+            </if>
+            <if test="status != null and status != '' ">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <!--根据id删除-->
+    <delete id="deleteById" >
+        delete from apply where id=#{id}
+    </delete>
+
+
+</mapper>

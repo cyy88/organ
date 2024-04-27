@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mty.organ.mapper.ActivitiesMapper" >
+
+    <resultMap id="BaseResultMap" type="com.mty.organ.entity.Activities">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="oid" jdbcType="VARCHAR" property="oid" />
+        <result column="image" jdbcType="VARCHAR" property="image" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="stime" jdbcType="VARCHAR" property="stime" />
+        <result column="etime" jdbcType="VARCHAR" property="etime" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="hours" jdbcType="VARCHAR" property="hours" />
+        <result column="place" jdbcType="VARCHAR" property="place" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        oid,
+        image,
+        name,
+        stime,
+        etime,
+        content,
+        status,
+        create_time,
+        hours,
+        place
+    </sql>
+
+
+    <!--根据ID查询-->
+    <select id="queryById" resultType="com.mty.organ.entity.Activities" >
+       select
+        a.id,
+        a.oid,
+        a.image,
+        a.name,
+        a.stime,
+        a.etime,
+        a.content,
+        a.status,
+        a.create_time createTime,
+        a.hours,
+        a.place,
+        o.name oname,
+        o.type otype
+        from activities a left join organ o on a.oid = o.id where a.id=#{id}
+    </select>
+
+
+    <select id="queryAllByLimit" resultType="com.mty.organ.entity.Activities" parameterType="map">
+        select
+        a.id,
+        a.oid,
+        a.image,
+        a.name,
+        a.stime,
+        a.etime,
+        a.content,
+        a.status,
+        a.create_time createTime,
+        a.hours,
+        a.place,
+        o.name oname,
+        o.type otype
+        from activities a left join organ o on a.oid = o.id
+        <where>
+            <if test="id != null and id != '' ">
+                and a.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and a.oid = #{oid}
+            </if>
+            <if test="mid != null and mid != '' ">
+                and a.oid in ((select o.id from organ o where o.uid = #{mid}))
+            </if>
+            <if test="image != null and image != '' ">
+                and a.image = #{image}
+            </if>
+            <if test="name != null and name != '' ">
+                and a.name like concat('%',#{name},'%')
+            </if>
+            <if test="stime != null and stime != '' ">
+                and a.stime = #{stime}
+            </if>
+            <if test="etime != null and etime != '' ">
+                and a.etime = #{etime}
+            </if>
+            <if test="content != null and content != '' ">
+                and a.content = #{content}
+            </if>
+            <if test="status != null and status != '' ">
+                and a.status = #{status}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and a.create_time = #{createTime}
+            </if>
+            <if test="hours != null and hours != '' ">
+                and a.hours = #{hours}
+            </if>
+            <if test="place != null and place != '' ">
+                and a.place = #{place}
+            </if>
+
+        </where>
+        order by a.create_time desc
+    </select>
+
+
+    <select id="queryCondition" resultType="com.mty.organ.entity.Activities">
+        select
+        a.id,
+        a.oid,
+        a.image,
+        a.name,
+        a.stime,
+        a.etime,
+        a.content,
+        a.status,
+        a.create_time createTime,
+        a.hours,
+        a.place,
+        o.name oname,
+        o.type otype
+        from activities a left join organ o on a.oid = o.id
+        <where>
+            <if test="id != null and id != '' ">
+                and a.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and a.oid = #{oid}
+            </if>
+            <if test="image != null and image != '' ">
+                and a.image = #{image}
+            </if>
+            <if test="name != null and name != '' ">
+                and a.name like concat('%',#{name},'%')
+            </if>
+            <if test="stime != null and stime != '' ">
+                and a.stime = #{stime}
+            </if>
+            <if test="etime != null and etime != '' ">
+                and a.etime = #{etime}
+            </if>
+            <if test="content != null and content != '' ">
+                and a.content = #{content}
+            </if>
+            <if test="status != null and status != '' ">
+                and a.status = #{status}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and a.create_time = #{createTime}
+            </if>
+            <if test="hours != null and hours != '' ">
+                and a.hours = #{hours}
+            </if>
+            <if test="place != null and place != '' ">
+                and a.place = #{place}
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+
+    <!--添加-->
+    <insert id="insert" parameterType="com.mty.organ.entity.Activities" keyProperty="id" useGeneratedKeys="true">
+        insert into activities (
+            oid,
+            image,
+            name,
+            stime,
+            etime,
+            content,
+            status,
+            create_time,
+            hours,
+            place
+        )values(
+            #{oid},
+            #{image},
+            #{name},
+            #{stime},
+            #{etime},
+            #{content},
+            #{status},
+            #{createTime},
+            #{hours},
+            #{place}
+        )
+    </insert>
+
+
+    <!--修改-->
+    <update id="update" parameterType="com.mty.organ.entity.Activities">
+        update activities
+        <set>
+            <if test="oid != null and oid != '' ">
+                oid = #{oid},
+            </if>
+            <if test="image != null and image != '' ">
+                image = #{image},
+            </if>
+            <if test="name != null and name != '' ">
+                name = #{name},
+            </if>
+            <if test="stime != null and stime != '' ">
+                stime = #{stime},
+            </if>
+            <if test="etime != null and etime != '' ">
+                etime = #{etime},
+            </if>
+            <if test="content != null and content != '' ">
+                content = #{content},
+            </if>
+            <if test="status != null and status != '' ">
+                status = #{status},
+            </if>
+            <if test="hours != null and hours != '' ">
+                hours = #{hours},
+            </if>
+            <if test="place != null and place != '' ">
+                place = #{place}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <!--根据id删除-->
+    <delete id="deleteById" >
+        delete from activities where id=#{id}
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mty.organ.mapper.ResourcesMapper" >
+
+    <resultMap id="BaseResultMap" type="com.mty.organ.entity.Resources">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="oid" jdbcType="VARCHAR" property="oid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="files" jdbcType="VARCHAR" property="files" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        oid,
+        name,
+        files,
+        remark,
+        create_time
+    </sql>
+
+
+    <!--根据ID查询-->
+    <select id="queryById" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from resources where id=#{id}
+    </select>
+
+
+    <select id="queryAllByLimit" resultType="com.mty.organ.entity.Resources" parameterType="map">
+        select
+        r.id,
+        r.oid,
+        r.name,
+        r.files,
+        r.remark,
+        r.create_time createTime,
+        o.name oname,
+        o.type otype
+        from resources r left join organ o on r.oid = o.id
+        <where>
+            <if test="id != null and id != '' ">
+                and r.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and r.oid = #{oid}
+            </if>
+            <if test="mid != null and mid != '' ">
+                and o.uid = #{mid}
+            </if>
+            <if test="uid != null and uid != '' ">
+                and o.id in (select oid from apply where uid = #{uid} and status='02')
+            </if>
+            <if test="name != null and name != '' ">
+                and r.name like concat('%',#{name},'%')
+            </if>
+            <if test="files != null and files != '' ">
+                and r.files = #{files}
+            </if>
+            <if test="remark != null and remark != '' ">
+                and r.remark = #{remark}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and r.create_time = #{createTime}
+            </if>
+        </where>
+        order by r.create_time desc
+    </select>
+
+
+    <select id="queryCondition" resultType="com.mty.organ.entity.Resources">
+        select
+        r.id,
+        r.oid,
+        r.name,
+        r.files,
+        r.remark,
+        r.create_time createTime,
+        o.name oname,
+        o.type otype
+        from resources r left join organ o on r.oid = o.id
+        <where>
+            <if test="id != null and id != '' ">
+                and r.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and r.oid = #{oid}
+            </if>
+            <if test="name != null and name != '' ">
+                and r.name like concat('%',#{name},'%')
+            </if>
+            <if test="files != null and files != '' ">
+                and r.files = #{files}
+            </if>
+            <if test="remark != null and remark != '' ">
+                and r.remark = #{remark}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and r.create_time = #{createTime}
+            </if>
+        </where>
+        order by r.create_time desc
+    </select>
+
+
+    <!--添加-->
+    <insert id="insert" parameterType="com.mty.organ.entity.Resources" keyProperty="id" useGeneratedKeys="true">
+        insert into resources (
+            oid,
+            name,
+            files,
+            remark,
+            create_time
+        )values(
+            #{oid},
+            #{name},
+            #{files},
+            #{remark},
+            #{createTime}
+        )
+    </insert>
+
+
+    <!--修改-->
+    <update id="update" parameterType="com.mty.organ.entity.Resources">
+        update resources
+        <set>
+            <if test="oid != null and oid != '' ">
+                oid = #{oid},
+            </if>
+            <if test="name != null and name != '' ">
+                name = #{name},
+            </if>
+            <if test="files != null and files != '' ">
+                files = #{files},
+            </if>
+            <if test="remark != null and remark != '' ">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <!--根据id删除-->
+    <delete id="deleteById" >
+        delete from resources where id=#{id}
+    </delete>
+
+
+</mapper>

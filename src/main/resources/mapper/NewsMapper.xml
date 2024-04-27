@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mty.organ.mapper.NewsMapper" >
+
+    <resultMap id="BaseResultMap" type="com.mty.organ.entity.News">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="oid" jdbcType="VARCHAR" property="oid" />
+        <result column="image" jdbcType="VARCHAR" property="image" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="detail" jdbcType="VARCHAR" property="detail" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        oid,
+        image,
+        title,
+        detail,
+        content,
+        create_time
+    </sql>
+
+
+    <!--根据ID查询-->
+    <select id="queryById" resultType="com.mty.organ.entity.News" >
+        select
+        n.id,
+        n.oid,
+        n.image,
+        n.title,
+        n.detail,
+        n.content,
+        n.create_time createTime,
+        o.name oname,
+        o.type otype
+        from news n left join organ o on n.oid = o.id
+        where n.id=#{id}
+    </select>
+
+
+    <select id="queryAllByLimit" resultType="com.mty.organ.entity.News" parameterType="map">
+        select
+        n.id,
+        n.oid,
+        n.image,
+        n.title,
+        n.detail,
+        n.content,
+        n.create_time createTime,
+        o.name oname,
+        o.type otype
+        from news n left join organ o on n.oid = o.id
+        <where>
+            <if test="id != null and id != '' ">
+                and n.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and n.oid = #{oid}
+            </if>
+            <if test="mid != null and mid != '' ">
+                and n.oid in ((select o.id from organ o where o.uid = #{mid}))
+            </if>
+            <if test="image != null and image != '' ">
+                and n.image = #{image}
+            </if>
+            <if test="title != null and title != '' ">
+                and n.title like concat('%',#{title},'%')
+            </if>
+            <if test="detail != null and detail != '' ">
+                and n.detail = #{detail}
+            </if>
+            <if test="content != null and content != '' ">
+                and n.content = #{content}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and n.create_time = #{createTime}
+            </if>
+        </where>
+        order by n.create_time desc
+    </select>
+
+
+    <select id="queryCondition" resultType="com.mty.organ.entity.News">
+        select
+        n.id,
+        n.oid,
+        n.image,
+        n.title,
+        n.detail,
+        n.content,
+        n.create_time createTime,
+        o.name oname,
+        o.type otype
+        from news n left join organ o on n.oid = o.id
+        <where>
+            <if test="id != null and id != '' ">
+                and n.id = #{id}
+            </if>
+            <if test="oid != null and oid != '' ">
+                and n.oid = #{oid}
+            </if>
+            <if test="image != null and image != '' ">
+                and n.image = #{image}
+            </if>
+            <if test="title != null and title != '' ">
+                and n.title like concat('%',#{title},'%')
+            </if>
+            <if test="detail != null and detail != '' ">
+                and n.detail = #{detail}
+            </if>
+            <if test="content != null and content != '' ">
+                and n.content = #{content}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and n.create_time = #{createTime}
+            </if>
+        </where>
+        order by n.create_time desc
+    </select>
+
+
+    <!--添加-->
+    <insert id="insert" parameterType="com.mty.organ.entity.News" keyProperty="id" useGeneratedKeys="true">
+        insert into news (
+            oid,
+            image,
+            title,
+            detail,
+            content,
+            create_time
+        )values(
+            #{oid},
+            #{image},
+            #{title},
+            #{detail},
+            #{content},
+            #{createTime}
+        )
+    </insert>
+
+
+    <!--修改-->
+    <update id="update" parameterType="com.mty.organ.entity.News">
+        update news
+        <set>
+            <if test="oid != null and oid != '' ">
+                oid = #{oid},
+            </if>
+            <if test="image != null and image != '' ">
+                image = #{image},
+            </if>
+            <if test="title != null and title != '' ">
+                title = #{title},
+            </if>
+            <if test="detail != null and detail != '' ">
+                detail = #{detail},
+            </if>
+            <if test="content != null and content != '' ">
+                content = #{content},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <!--根据id删除-->
+    <delete id="deleteById" >
+        delete from news where id=#{id}
+    </delete>
+
+
+</mapper>

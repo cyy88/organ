@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mty.organ.mapper.OrganMapper" >
+
+    <resultMap id="BaseResultMap" type="com.mty.organ.entity.Organ">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="image" jdbcType="VARCHAR" property="image" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="uid" jdbcType="VARCHAR" property="uid" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        image,
+        name,
+        type,
+        uid,
+        status,
+        content,
+        create_time
+    </sql>
+
+
+    <!--根据ID查询-->
+    <select id="queryById" resultType="com.mty.organ.entity.Organ" >
+        select
+        o.id,
+        o.image,
+        o.name,
+        o.type,
+        o.uid,
+        o.status,
+        o.content,
+        o.create_time createTime,
+        u.realname uname
+        from organ o left join user u on o.uid = u.id where o.id=#{id}
+    </select>
+
+
+    <select id="queryAllByLimit" resultType="com.mty.organ.entity.Organ" parameterType="map">
+        select
+        o.id,
+        o.image,
+        o.name,
+        o.type,
+        o.uid,
+        o.status,
+        o.content,
+        o.create_time createTime,
+        u.realname uname
+        from organ o left join user u on o.uid = u.id
+        <where>
+            <if test="id != null and id != '' ">
+                and o.id = #{id}
+            </if>
+            <if test="image != null and image != '' ">
+                and o.image = #{image}
+            </if>
+            <if test="name != null and name != '' ">
+                and o.name like concat('%',#{name},'%')
+            </if>
+            <if test="type != null and type != '' ">
+                and o.type = #{type}
+            </if>
+            <if test="uid != null and uid != '' ">
+                and o.uid = #{uid}
+            </if>
+            <if test="status != null and status != '' ">
+                and o.status = #{status}
+            </if>
+            <if test="content != null and content != '' ">
+                and o.content = #{content}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and o.create_time = #{createTime}
+            </if>
+        </where>
+        order by o.create_time desc
+    </select>
+
+
+    <select id="queryCondition" resultType="com.mty.organ.entity.Organ">
+        select
+        o.id,
+        o.image,
+        o.name,
+        o.type,
+        o.uid,
+        o.status,
+        o.content,
+        o.create_time createTime,
+        u.realname uname
+        from organ o left join user u on o.uid = u.id
+        <where>
+            <if test="id != null and id != '' ">
+                and o.id = #{id}
+            </if>
+            <if test="image != null and image != '' ">
+                and o.image = #{image}
+            </if>
+            <if test="name != null and name != '' ">
+                and o.name like concat('%',#{name},'%')
+            </if>
+            <if test="type != null and type != '' ">
+                and o.type = #{type}
+            </if>
+            <if test="uid != null and uid != '' ">
+                and o.uid = #{uid}
+            </if>
+            <if test="status != null and status != '' ">
+                and o.status = #{status}
+            </if>
+            <if test="content != null and content != '' ">
+                and o.content = #{content}
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                and o.create_time = #{createTime}
+            </if>
+        </where>
+        order by o.create_time desc
+    </select>
+
+
+    <!--添加-->
+    <insert id="insert" parameterType="com.mty.organ.entity.Organ" keyProperty="id" useGeneratedKeys="true">
+        insert into organ (
+            image,
+            name,
+            type,
+            uid,
+            status,
+            content,
+            create_time
+        )values(
+            #{image},
+            #{name},
+            #{type},
+            #{uid},
+            #{status},
+            #{content},
+            #{createTime}
+        )
+    </insert>
+
+
+    <!--修改-->
+    <update id="update" parameterType="com.mty.organ.entity.Organ">
+        update organ
+        <set>
+            <if test="image != null and image != '' ">
+                image = #{image},
+            </if>
+            <if test="name != null and name != '' ">
+                name = #{name},
+            </if>
+            <if test="type != null and type != '' ">
+                type = #{type},
+            </if>
+            <if test="uid != null and uid != '' ">
+                uid = #{uid},
+            </if>
+            <if test="status != null and status != '' ">
+                status = #{status},
+            </if>
+            <if test="content != null and content != '' ">
+                content = #{content},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <!--根据id删除-->
+    <delete id="deleteById" >
+        delete from organ where id=#{id}
+    </delete>
+
+
+</mapper>
